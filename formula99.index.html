@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>곱셈 공식 퀴즈 (결과 맞추기)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f7fa; /* Very light cyan */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-align: center;
+            width: 100%;
+            max-width: 700px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #00796b; /* Dark cyan */
+            margin-bottom: 25px;
+            font-size: 2.5em;
+        }
+        .quiz-area {
+            margin-bottom: 30px;
+        }
+        .formula-question {
+            font-family: 'Times New Roman', serif;
+            font-size: 2.4em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #e0f2f7; /* Lighter cyan */
+            border-radius: 10px;
+            border: 1px solid #b2ebf2;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            color: #004d40;
+        }
+        .options-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 반응형 2열 그리드 */
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .option-button {
+            padding: 18px 25px;
+            background-color: #4db6ac; /* Medium cyan */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-family: 'Times New Roman', serif;
+        }
+        .option-button:hover {
+            background-color: #00897b; /* Darker cyan */
+            transform: translateY(-3px);
+        }
+        .option-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .message {
+            font-size: 1.3em;
+            margin-top: 25px;
+            font-weight: bold;
+            min-height: 35px;
+        }
+        .correct {
+            color: #388e3c; /* Dark green */
+        }
+        .incorrect {
+            color: #d32f2f; /* Dark red */
+        }
+        .start-button {
+            padding: 18px 35px;
+            background-color: #6a1b9a; /* Dark purple */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .start-button:hover {
+            background-color: #4a148c; /* Even darker purple */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>곱셈 공식 퀴즈</h1>
+        <p>제시된 공식의 올바른 결과식을 선택하세요!</p>
+
+        <div class="quiz-area">
+            <div class="formula-question" id="formula-question">
+                게임을 시작하려면 '게임 시작' 버튼을 누르세요.
+            </div>
+            <div class="options-area" id="options-area">
+                </div>
+            <div class="message" id="message"></div>
+        </div>
+        <button class="start-button" id="start-button">게임 시작</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "(a+b)²",
+                correctAnswer: "a²+2ab+b²",
+                options: ["a²+b²", "a²-2ab+b²", "a²+2ab+b²", "a²+ab+b²"]
+            },
+            {
+                question: "(a-b)²",
+                correctAnswer: "a²-2ab+b²",
+                options: ["a²+b²", "a²-2ab+b²", "a²+2ab+b²", "a²-ab+b²"]
+            },
+            {
+                question: "(a+b)(a-b)",
+                correctAnswer: "a²-b²",
+                options: ["(a+b)²", "a²+b²", "a²-b²", "a²-2ab+b²"]
+            },
+            {
+                question: "(x+a)(x+b)",
+                correctAnswer: "x²+(a+b)x+ab",
+                options: ["x²+ab", "x²+ax+b²", "x²+(a+b)x+ab", "x²+abx"]
+            },
+            {
+                question: "(ax+b)(cx+d)",
+                correctAnswer: "acx²+(ad+bc)x+bd",
+                options: ["acx²+bd", "acx²+(a+d)x+bc", "acx²+(ad+bc)x+bd", "a²c²x²+bd"]
+            },
+            {
+                question: "(a+b+c)²",
+                correctAnswer: "a²+b²+c²+2ab+2bc+2ca",
+                options: ["a²+b²+c²", "a²+b²+c²+ab+bc+ca", "a²+b²+c²+2ab+2bc+2ca", "a²+b²+c²+3abc"]
+            },
+            {
+                question: "(a+b)³",
+                correctAnswer: "a³+3a²b+3ab²+b³",
+                options: ["a³+b³", "a³+ab+b³", "a³+3a²b+3ab²+b³", "a³+b³+3ab"]
+            },
+            {
+                question: "(a-b)³",
+                correctAnswer: "a³-3a²b+3ab²-b³",
+                options: ["a³-b³", "a³-3a²b+3ab²-b³", "a³+3a²b-3ab²-b³", "a³-b³-3ab"]
+            },
+            {
+                question: "(a+b)(a²-ab+b²)",
+                correctAnswer: "a³+b³",
+                options: ["a³-b³", "a³+b³", "a²+b²", "(a+b)³"]
+            },
+            {
+                question: "(a-b)(a²+ab+b²)",
+                correctAnswer: "a³-b³",
+                options: ["a³+b³", "a³-b³", "a²-b²", "(a-b)³"]
+            },
+            {
+                question: "(a²+ab+b²)(a²-ab+b²)",
+                correctAnswer: "a⁴+a²b²+b⁴",
+                options: ["a⁴-b⁴", "a⁴+b⁴", "a⁴+a²b²+b⁴", "a²-b²"]
+            },
+            {
+                question: "(a+b+c)(a²+b²+c²-ab-bc-ca)",
+                correctAnswer: "a³+b³+c³-3abc",
+                options: ["a³+b³+c³", "a³+b³+c³-3abc", "a²+b²+c²", "(a+b+c)³"]
+            }
+        ];
+
+        let currentQuiz;
+        const formulaQuestionDiv = document.getElementById('formula-question');
+        const optionsAreaDiv = document.getElementById('options-area');
+        const messageDiv = document.getElementById('message');
+        const startButton = document.getElementById('start-button');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        function generateNewQuiz() {
+            messageDiv.textContent = '';
+            // 랜덤으로 퀴즈 선택
+            const randomIndex = Math.floor(Math.random() * quizData.length);
+            currentQuiz = quizData[randomIndex];
+
+            // 문제 표시
+            formulaQuestionDiv.textContent = `${currentQuiz.question} = ??`;
+
+            // 옵션 섞기 및 버튼 생성
+            shuffleArray(currentQuiz.options); // 옵션을 섞어서 매번 다르게 보이게 함
+            optionsAreaDiv.innerHTML = ''; // 기존 버튼 제거
+            currentQuiz.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                optionsAreaDiv.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedOption) {
+            if (selectedOption === currentQuiz.correctAnswer) {
+                messageDiv.textContent = '정답입니다! 🎉';
+                messageDiv.className = 'message correct';
+                // 정답을 맞추면 정답이 보이도록 공식 전체 표시
+                formulaQuestionDiv.textContent = `${currentQuiz.question} = ${currentQuiz.correctAnswer}`;
+                disableOptions(); // 옵션 버튼 비활성화
+                setTimeout(generateNewQuiz, 1500); // 1.5초 후 새 문제
+            } else {
+                messageDiv.textContent = '오답입니다. 다시 시도하세요. 🤔';
+                messageDiv.className = 'message incorrect';
+            }
+        }
+
+        function disableOptions() {
+            const buttons = optionsAreaDiv.querySelectorAll('.option-button');
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        function enableOptions() {
+            const buttons = optionsAreaDiv.querySelectorAll('.option-button');
+            buttons.forEach(button => {
+                button.disabled = false;
+            });
+        }
+
+        // '게임 시작' 버튼 클릭 이벤트
+        startButton.addEventListener('click', function() {
+            startButton.style.display = 'none'; // 시작 버튼 숨기기
+            generateNewQuiz(); // 첫 문제 생성
+            enableOptions(); // 옵션 버튼 활성화
+        });
+
+        // 초기 상태 (게임 시작 버튼 보이기)
+        disableOptions(); // 초기에는 옵션 버튼 비활성화
+    </script>
+</body>
+</html>
